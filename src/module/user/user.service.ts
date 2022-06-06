@@ -59,12 +59,12 @@ export class UserService {
   }
 
   async validatePin(authUser,walletDto: UpdatePinDto): Promise<User> {
+    const { current_pin} = walletDto;
+    await this.confirmPin(authUser,walletDto)
 
-    const { new_pin,current_pin,confirmation_pin } = walletDto;
-    if (new_pin != confirmation_pin){
-      throw new UnauthorizedException();
-    }
     const user = await this.findById(authUser.userId);
+    await this.checkForWalletPin(user)
+
     if (!(await user?.validatePin(current_pin))) {
       throw new UnauthorizedException();
     }
@@ -78,9 +78,13 @@ export class UserService {
     }
     const user = await this.findById(authUser.userId);
 
-    // if (user.wallet_pin != null) {
-    //   throw new ForbiddenException({},"please updated your pin as your pin has been created");
-    // }
     return user;
+  }
+
+  async checkForWalletPin(user:User):Promise<Boolean>{
+    if (user.wallet_pin != null) {
+      throw new ForbiddenException({},"please updated your pin as your pin has't been created");
+    }
+    return true
   }
 }

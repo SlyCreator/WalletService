@@ -27,7 +27,7 @@ export class User extends BaseEntity {
   password: string;
 
   @Column({default:0})
-  wallet_amount:string
+  wallet_amount:number
 
   @Column({default:null})
   wallet_pin:string
