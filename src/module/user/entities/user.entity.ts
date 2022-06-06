@@ -40,11 +40,8 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-
-  @OneToMany(() => BillEntity, (bill: BillEntity) => bill.user, {
-    nullable: false,
-  })
-  transactions: Transaction[];
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[]
 
   @BeforeInsert()
   async hashPassword() {

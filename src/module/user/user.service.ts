@@ -23,8 +23,8 @@ export class UserService {
     await user.save();
     return user;
   }
-  async showById(id: number): Promise<User> {
-    const user = await this.findById(id);
+  async fetchAuth(@AuthUser() authUser): Promise<User> {
+    const user = await this.findById(authUser.userId);
     delete user.password;
     return user;
   }
