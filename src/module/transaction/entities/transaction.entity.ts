@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Transaction  extends BaseEntity{
@@ -17,8 +18,11 @@ export class Transaction  extends BaseEntity{
   @Column()
   status: string;
 
-  @OneToMany(() => BillEntity, (bill: BillEntity) => bill.user, {
-    nullable: false,
-  })
-  bills: BillEntity[];
+  @ManyToOne(
+    () => User,
+    (user) => user.transactions
+  )
+  user: User
+
+
 }
