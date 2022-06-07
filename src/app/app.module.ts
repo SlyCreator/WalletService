@@ -8,6 +8,7 @@ import { User } from '../module/user/entities/user.entity';
 import { UserModule } from '../module/user/user.module';
 import { Transaction } from '../module/transaction/entities/transaction.entity';
 import { TransactionModule } from '../module/transaction/transaction.module';
+import { PayStackModule } from '../service/paystack/paystack.module';
 
 const entities = [User,Transaction];
 @Module({

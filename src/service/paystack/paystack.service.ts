@@ -1,4 +1,4 @@
-import {  Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InitDto } from './dto/init-dto';
 
@@ -7,6 +7,7 @@ import { InitDto } from './dto/init-dto';
 export class PayStackService {
   constructor(
     private readonly httpService: HttpService,
+    @Optional()
     private readonly HOST: string = 'api.paystack.co' ) {}
 
   async initialize(data:InitDto){
