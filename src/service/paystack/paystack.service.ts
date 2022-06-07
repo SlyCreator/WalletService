@@ -28,7 +28,5 @@ export class PayStackService {
       })
 
   }
-  // findAll(): Observable<AxiosResponse<Cat[]>> {
-  //   return this.httpService.get('http://localhost:3000/cats');
-  // }
+
 }
