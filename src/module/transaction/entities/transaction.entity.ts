@@ -18,6 +18,9 @@ export class Transaction  extends BaseEntity{
   @Column()
   status: string;
 
+  @Column()
+  payment_url: string;
+
   @ManyToOne(
     () => User,
     (user) => user.transactions

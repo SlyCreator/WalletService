@@ -31,6 +31,7 @@ export class UserService {
 
   async create_pin(authUser, walletDto: CreatePinDto): Promise<UpdateResult> {
     const user = await this.confirmPin(authUser,walletDto);
+
     user.wallet_pin = walletDto.new_pin
     return await this.userRepository.update(user.id, user);
   }
@@ -82,8 +83,8 @@ export class UserService {
   }
 
   async checkForWalletPin(user:User):Promise<Boolean>{
-    if (user.wallet_pin != null) {
-      throw new ForbiddenException({},"please updated your pin as your pin has't been created");
+    if (user.wallet_pin == null) {
+      throw new ForbiddenException({"error":"please updated your pin as your pin has't been created"});
     }
     return true
   }

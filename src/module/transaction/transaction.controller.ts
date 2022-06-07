@@ -24,10 +24,9 @@ export class TransactionController {
     return this.transactionService.createWithdrawal(authUser,createTransactionDto);
   }
 
-  @Patch(':id/verify')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionService.update(+id, updateTransactionDto);
+  @Patch(':reference/verify')
+  update(@Param('reference') reference: string, @Body() updateTransactionDto: UpdateTransactionDto) {
+    return this.transactionService.update(reference);
   }
-
 
 }
