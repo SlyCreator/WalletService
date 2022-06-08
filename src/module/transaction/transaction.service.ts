@@ -1,12 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
-import { UserService } from '../user/user.service';
+import { UserService } from '../user/services/user.service';
 import { PayStackService } from '../../service/paystack/paystack.service';
 import { InitDto } from '../../service/paystack/dto/init-dto';
+import { UserWalletService } from '../user/services/user-wallet.service';
 
 
 @Injectable()
@@ -14,18 +15,19 @@ export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
-    private readonly usersService: UserService,
+    private readonly usersWalletService: UserWalletService,
+    private readonly userService: UserService,
     private paystack: PayStackService
   ) {}
 
   async create(authUser,createTransactionDto: CreateTransactionDto) {
-    const user = await this.usersService.fetchAuth(authUser.userId)
-    await this.usersService.checkForWalletPin(user)
+   const user = await this.transactionPrecondition(authUser)
     const paystackData ={
       amount : createTransactionDto.amount,
       email: user.email
     }
     const paystack = await this.paystack.initialize(paystackData)
+    console.log(paystack)
     const transaction = new Transaction()
     transaction.amount = createTransactionDto.amount
     transaction.type =  'deposit'
@@ -36,10 +38,7 @@ export class TransactionService {
   }
 
   async createWithdrawal(authUser,createTransactionDto: CreateTransactionDto) {
-
-    const user = await this.usersService.fetchAuth(authUser.userId)
-    await this.usersService.checkForWalletPin(user)
-
+    const user = await this.transactionPrecondition(authUser)
     if (user.wallet_amount < createTransactionDto.amount){
         throw new ForbiddenException({"error":"You dont have enough balance please update amount"});
     }
@@ -74,6 +73,19 @@ export class TransactionService {
         ...data
       }
     })
+  }
+
+  async transactionPrecondition(authUser)
+  {
+    const user = await this.userService.fetchAuth(authUser.userId)
+    const status = await this.usersWalletService.userHasWalletPin(user);
+    if (!status) {
+      throw new BadRequestException({
+        "status": "error",
+        "message": "You cannot perform this action twice,try creating your pin!"
+      });
+    }
+    return user;
   }
 
 }

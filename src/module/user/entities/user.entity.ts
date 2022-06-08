@@ -59,7 +59,7 @@ export class User extends BaseEntity {
   async hashPin(){
     this.wallet_pin = await bcrypt.hash(this.wallet_pin,8)
   }
-  async validatePin(wallet_pin: string): Promise<boolean> {
+  async validateWalletPin(wallet_pin: string): Promise<boolean> {
     return bcrypt.compare(wallet_pin, this.wallet_pin);
   }
 }

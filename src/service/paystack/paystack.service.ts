@@ -11,13 +11,14 @@ export class PayStackService {
     private readonly HOST: string = 'api.paystack.co' ) {}
 
   async initialize(data:InitDto){
-    return this.httpService.post(
+    const res =  this.httpService.post(
       `${this.HOST}/transaction/initialize`, data,
       {headers: {
           Authorization: `Bearer ${process.env['PAYSTACK_SECRET']}`,
           'Content-Type': 'application/json'
         }
       })
+    return res
   }
   async verifyPayment(reference:string){
     return this.httpService.get(

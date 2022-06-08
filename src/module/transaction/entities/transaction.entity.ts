@@ -16,6 +16,9 @@ export class Transaction  extends BaseEntity{
   type:string
 
   @Column()
+  ref:string
+
+  @Column()
   status: string;
 
   @Column()

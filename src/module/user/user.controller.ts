@@ -1,8 +1,8 @@
 import {
   Body,
-  Controller, HttpCode, HttpStatus, Post, UseGuards,
+  Controller, HttpCode, HttpStatus, Post, UseGuards, UsePipes, ValidationPipe,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from './services/user.service';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { UpdatePinDto } from './dto/update-pin-dto';
 import { AuthUser } from '../../decorators/auth-user-decorator';
@@ -15,6 +15,7 @@ export class UserController {
 
 
   @Post('/create-pin')
+  @UsePipes(ValidationPipe)
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   create_pin(@AuthUser() authUser ,@Body() createPinDto:CreatePinDto) {
@@ -23,6 +24,7 @@ export class UserController {
   }
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @UsePipes(ValidationPipe)
   @Post('/update-pin')
   update_pin(@AuthUser() authUser ,@Body() walletDto:UpdatePinDto) {
     return this.usersService.update_pin(authUser,walletDto);
