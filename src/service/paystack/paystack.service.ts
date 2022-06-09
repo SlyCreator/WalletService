@@ -1,6 +1,7 @@
 import { Injectable, Optional } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InitDto } from './dto/init-dto';
+import { lastValueFrom, map } from 'rxjs';
 
 
 @Injectable()
@@ -11,20 +12,29 @@ export class PayStackService {
     private readonly HOST: string = 'api.paystack.co' ) {}
 
   async initialize(data:InitDto){
-    const res =  this.httpService.post(
-      `${this.HOST}/transaction/initialize`, data,
-      {headers: {
-          Authorization: `Bearer ${process.env['PAYSTACK_SECRET']}`,
-          'Content-Type': 'application/json'
+
+    const k = await lastValueFrom(
+      this.httpService.post(
+        `${this.HOST}/transaction/initialize`, data,
+        {headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_PUBLIC_KEY}`,
+            'Content-Type': 'application/json'
+          }
         }
-      })
-    return res
+      ).pipe(
+        map((response) => {
+          return response.data;
+        })
+      )
+
+    )
+    return k;
   }
   async verifyPayment(reference:string){
     return this.httpService.get(
       `${this.HOST}/https://api.paystack.co/transaction/verify/${reference}`,
       {headers: {
-          Authorization: `Bearer ${process.env['PAYSTACK_SECRET']}`,
+          Authorization: `Bearer ${process.env.PAYSTACK_PUBLIC_KEY}`,
           'Content-Type': 'application/json'
         }
       })
