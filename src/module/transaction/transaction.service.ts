@@ -79,6 +79,7 @@ export class TransactionService {
   {
     const user = await this.userService.fetchAuth(authUser.userId)
     const status = await this.usersWalletService.userHasWalletPin(user);
+    console.log(status)
     if (!status) {
       throw new BadRequestException({
         "status": "error",

@@ -29,7 +29,6 @@ export class TransactionController {
     return this.transactionService.create(authUser,createTransactionDto);
   }
 
-
   @Post('/withdraw')
   @HttpCode(HttpStatus.OK)
   @UsePipes(ValidationPipe)
