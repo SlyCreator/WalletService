@@ -21,7 +21,7 @@ export class UserWalletService {
   }
 
   async userHasWalletPin(user:User):Promise<Boolean>{
-    if (user.wallet_pin == null) {
+    if (user.wallet_pin != null) {
       return false
     }
     return true
